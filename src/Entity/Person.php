@@ -32,6 +32,11 @@ class Person
      */
     private $l_name;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $state;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -69,6 +74,18 @@ class Person
     public function setLName(string $l_name): self
     {
         $this->l_name = $l_name;
+
+        return $this;
+    }
+
+    public function getState(): ?int
+    {
+        return $this->state;
+    }
+
+    public function setState(int $state): self
+    {
+        $this->state = $state;
 
         return $this;
     }
