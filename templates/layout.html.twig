@@ -2,10 +2,13 @@
 
 {% block title %}{% endblock %}
 
-{% block nav %}{% endblock %}
+{% block body %}
+    {% block nav %}
+        {% include 'temp/navbar/navbar.html.twig' %}
+    {% endblock %}
 
-{% block main %}
+    {% block main %}{% endblock %}
 
+    {% block footer %}{% endblock %}
 {% endblock %}
 
-{% block footer %}{% endblock %}
