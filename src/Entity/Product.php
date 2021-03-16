@@ -32,11 +32,6 @@ class Product
      */
     private $public_date;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=PersonLikeProduct::class, inversedBy="product_id")
-     */
-    private $personLikeProduct;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -78,15 +73,4 @@ class Product
         return $this;
     }
 
-    public function getPersonLikeProduct(): ?PersonLikeProduct
-    {
-        return $this->personLikeProduct;
-    }
-
-    public function setPersonLikeProduct(?PersonLikeProduct $personLikeProduct): self
-    {
-        $this->personLikeProduct = $personLikeProduct;
-
-        return $this;
-    }
 }
