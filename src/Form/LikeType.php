@@ -20,11 +20,17 @@ class LikeType extends AbstractType
                 'class' => Person::class,
                 'choice_label' => function(Person $person){
                 return $person->getFName() .' '. $person->getLName();
-                }
+                },
+                'attr' => [
+                    'class' => 'form-control'
+                ]
                 ])
             ->add('product_id', EntityType::class,[
                 'class' => Product::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ])
             ->add('submit', SubmitType::class,[
                 'attr' => [
