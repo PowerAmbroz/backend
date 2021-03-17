@@ -3,20 +3,29 @@
 {% block title %}Hello ProductController!{% endblock %}
 
 {% block main %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <a href="{{ path('add_product') }}" class="btn btn-success">Add Product</a>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/wamp64/www/honeti_rekrutacja/src/Controller/ProductController.php'|file_link(0) }}">src/Controller/ProductController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/wamp64/www/honeti_rekrutacja/templates/product/index.html.twig'|file_link(0) }}">templates/product/index.html.twig</a></code></li>
-    </ul>
-</div>
-
-    <a href="{{ path('add_product') }}" class="btn btn-light">Add Product</a>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Info</th>
+            <th scope="col">Public Date</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for data in productData %}
+            <tr>
+                <th scope="row">{{ data.id }}</th>
+                <td>{{ data.name }}</td>
+                <td>{{ data.info }}</td>
+                <td>{{ data.publicdate|date("d/m/Y") }}</td>
+                <td><a href="#" class="btn btn-primary">Edytuj</a> <a href="#" class="btn btn-danger">Usuń</a> </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

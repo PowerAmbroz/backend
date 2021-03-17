@@ -38,7 +38,8 @@ class PersonType extends AbstractType
                 ],
                 'attr' => [
                     'class' => 'form-control'
-                ]
+                ],
+                'expanded' => true
             ])
             ->add('submit', SubmitType::class,[
                 'attr' => [

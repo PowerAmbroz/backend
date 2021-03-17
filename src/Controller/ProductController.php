@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
 use App\Form\ProductType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -21,10 +22,14 @@ class ProductController extends AbstractController
      */
     public function index(): Response
     {
-        $productForm = $this->createForm(ProductType::class);
+        $em = $this->em();
+
+        $productData = $em->getRepository(Product::class)->findAll();
+
+//        dump($productData);die;
         return $this->render('product/index.html.twig', [
             'controller_name' => 'ProductController',
-            'productForm' => $productForm->createView()
+            'productData' => $productData
         ]);
     }
 

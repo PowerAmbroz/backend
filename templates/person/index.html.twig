@@ -3,20 +3,38 @@
 {% block title %}Hello PersonController!{% endblock %}
 
 {% block main %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <a href="{{ path('add_person') }}" class="btn btn-success">Add Person</a>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/wamp64/www/honeti_rekrutacja/src/Controller/PersonController.php'|file_link(0) }}">src/Controller/PersonController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/wamp64/www/honeti_rekrutacja/templates/person/index.html.twig'|file_link(0) }}">templates/person/index.html.twig</a></code></li>
-    </ul>
-</div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Login</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">State</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for data in personData %}
+        <tr>
+            <th scope="row">{{ data.id }}</th>
+            <td>{{ data.login }}</td>
+            <td>{{ data.fname }}</td>
+            <td>{{ data.lname }}</td>
+            {% if data.state == 1 %}
+                <td>aktywny</td>
+            {% elseif data.state == 2 %}
+                <td>banned</td>
+            {% else %}
+                <td>usuniety</td>
+            {% endif %}
 
-    <a href="{{ path('add_person') }}" class="btn btn-light">Add Person</a>
+            <td><a href="#" class="btn btn-primary">Edytuj</a> <a href="#" class="btn btn-danger">Usuń</a> </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

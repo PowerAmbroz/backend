@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Like;
+use App\Entity\Person;
+use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +21,15 @@ class LikeRepository extends ServiceEntityRepository
         parent::__construct($registry, Like::class);
     }
 
+
+    public function getAllData(){
+        return $this->createQueryBuilder('d')
+            ->select('d.id, pe.login, pr.name')
+                ->join(Person::class,'pe','WITH','pe.id = d.person_id')
+                ->join(Product::class,'pr','WITH','pr.id = d.product_id')
+                ->getQuery()->getResult();
+
+    }
     // /**
     //  * @return Like[] Returns an array of Like objects
     //  */

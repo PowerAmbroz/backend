@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Person;
 use App\Form\PersonType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,9 +21,13 @@ class PersonController extends AbstractController
      */
     public function index(): Response
     {
+        $em = $this->em();
+
+        $personData = $em->getRepository(Person::class)->findAll();
 
         return $this->render('person/index.html.twig', [
-            'controller_name' => 'PersonController'
+            'controller_name' => 'PersonController',
+            'personData' => $personData
         ]);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Like;
 use App\Form\LikeType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,8 +21,13 @@ class LikeController extends AbstractController
      */
     public function index(): Response
     {
+        $em = $this->em();
+
+        $likeData = $em->getRepository(Like::class)->getAllData();
+//        dump($likeData);die;
         return $this->render('like/index.html.twig', [
-            'controller_name' => 'LikeController'
+            'controller_name' => 'LikeController',
+            'likeData' => $likeData
         ]);
     }
 
@@ -42,12 +48,11 @@ class LikeController extends AbstractController
             $em = $this->em();
             $likeData = $likeForm->getData();
 
-//            dump($likeData);die;
             $em->persist($likeData);
             $em->flush();
 
             $this->addFlash('success', 'User has been added');
-            return $this->redirectToRoute('add_person');
+            return $this->redirectToRoute('like');
         }
 
         return $this->render('like/add.html.twig', [
