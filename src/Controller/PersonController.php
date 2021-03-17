@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Person;
 use App\Form\PersonType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -57,5 +59,52 @@ class PersonController extends AbstractController
         return $this->render('person/add.html.twig', [
             'personForm' => $personForm->createView()
         ]);
+    }
+
+    /**
+     * @Route ("/person/edit/{id}", name="edit_person")
+     * @param Person $person
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    public function editPerson(Person $person, Request $request, EntityManagerInterface $em): Response{
+
+        $editPerson = $this->createForm(PersonType::class, $person);
+
+        $editPerson->handleRequest($request);
+        if($editPerson->isSubmitted() && $editPerson->isValid()){
+
+            $em->persist($person);
+            $em->flush();
+
+            $this->addFlash('success', 'Person has been Edited');
+        }
+
+        return $this->render('person/edit.html.twig',[
+            'editPerson' => $editPerson->createView()
+        ]);
+    }
+
+    /**
+     * @Route ("/person/delete/{id}", name="delete_person")
+     * @param $id
+     * @param EntityManagerInterface $em
+     * @return RedirectResponse
+     */
+    public function deletePerson($id, EntityManagerInterface $em){
+
+        $updatePerson = $em->getRepository(Person::class)->find($id);
+        if (!$updatePerson) {
+            throw $this->createNotFoundException(
+                'Person not found'
+            );
+        }
+
+        $updatePerson->setState(3);
+        $em->flush();
+
+        $this->addFlash('success', 'Person\'s state has been changed');
+        return $this->redirectToRoute('person');
     }
 }

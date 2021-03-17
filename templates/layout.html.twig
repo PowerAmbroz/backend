@@ -7,6 +7,16 @@
         {% include 'temp/navbar/navbar.html.twig' %}
     {% endblock %}
 <div class="container">
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
     {% block main %}{% endblock %}
 </div>
     {% block footer %}{% endblock %}

@@ -22,7 +22,7 @@
                 <th scope="row">{{ data.id }}</th>
                 <td>{{ data.login }}</td>
                 <td>{{ data.name }}</td>
-                <td><a href="#" class="btn btn-primary">Edytuj</a> <a href="#" class="btn btn-danger">Usuń</a> </td>
+                <td><a href="{{ path('edit_like', {id: data.id}) }}" class="btn btn-primary">Edytuj</a></td>
             </tr>
         {% endfor %}
         </tbody>

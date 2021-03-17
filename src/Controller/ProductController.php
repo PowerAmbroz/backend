@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Like;
 use App\Entity\Product;
 use App\Form\ProductType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,7 +28,6 @@ class ProductController extends AbstractController
 
         $productData = $em->getRepository(Product::class)->findAll();
 
-//        dump($productData);die;
         return $this->render('product/index.html.twig', [
             'controller_name' => 'ProductController',
             'productData' => $productData
@@ -60,5 +61,49 @@ class ProductController extends AbstractController
             'productForm' => $productForm->createView()
         ]);
 
+    }
+
+    /**
+     * @Route ("/product/edit/{id}", name="edit_product")
+     * @param Product $product
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     */
+    public function editProduct(Product $product, Request $request, EntityManagerInterface $em): Response{
+
+        $editProduct = $this->createForm(ProductType::class, $product);
+
+        $editProduct->handleRequest($request);
+        if($editProduct->isSubmitted() && $editProduct->isValid()){
+
+            $em->persist($product);
+            $em->flush();
+
+            $this->addFlash('success', 'Product has been Edited');
+        }
+        return $this->render('/product/edit.html.twig',[
+            'editProduct' => $editProduct->createView()
+        ]);
+    }
+
+    /**
+     * @Route ("/product/delete/{id}", name="delete_product")
+     * @param $id
+     * @param EntityManagerInterface $em
+     * @return RedirectResponse
+     */
+    public function deleteProduct($id, EntityManagerInterface $em){
+
+        $deleteProduct = $em->getRepository(Product::class)->find($id);
+        $em->remove($deleteProduct);
+
+        $deleteLike = $em->getRepository(Like::class)->findOneBy(['product_id' => $id]);
+        $em->remove($deleteLike);
+
+        $em->flush();
+
+        $this->addFlash('success', 'Product has been deleted');
+
+        return $this->redirectToRoute('product');
     }
 }

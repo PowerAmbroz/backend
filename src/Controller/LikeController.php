@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Like;
 use App\Form\LikeType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -57,6 +59,33 @@ class LikeController extends AbstractController
 
         return $this->render('like/add.html.twig', [
             'likeForm' => $likeForm->createView()
+        ]);
+    }
+
+    /**
+     * @Route ("/like/edit/{id}", name="edit_like")
+     * @param Like $like
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    public function editLike(Like $like, Request $request, EntityManagerInterface $em): Response{
+
+        $editLike = $this->createForm(LikeType::class, $like);
+
+        $editLike->handleRequest($request);
+        if($editLike->isSubmitted() && $editLike->isValid()){
+
+            $em->persist($like);
+            $em->flush();
+
+            $this->addFlash('success', 'Likes have been Edited');
+
+            return $this->redirectToRoute('like');
+        }
+
+        return $this->render('/like/edit.html.twig',[
+            'editLike' => $editLike->createView()
         ]);
     }
 }
