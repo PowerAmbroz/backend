@@ -5,6 +5,12 @@
 {% block main %}
 
     <a href="{{ path('add_like') }}" class="btn btn-success">Add Like</a>
+    {{ form_start(filterForm) }}
+    <div class="search form-inline my-2 my-lg-0">
+        {{ form_row(filterForm.search) }}
+        {{ form_row(filterForm.submit) }}
+    </div>
+    {{ form_end(filterForm) }}
 
     <table class="table table-striped">
         <thead>
@@ -17,7 +23,6 @@
         </thead>
         <tbody>
         {% for data in likeData %}
-            {% dump data %}
             <tr>
                 <th scope="row">{{ data.id }}</th>
                 <td>{{ data.login }}</td>

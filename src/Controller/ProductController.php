@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Like;
 use App\Entity\Product;
 use App\Form\ProductType;
+use App\Form\FilterProductType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -21,16 +22,33 @@ class ProductController extends AbstractController
 
     /**
      * @Route("/product", name="product")
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
      */
-    public function index(): Response
+    public function index(Request $request,EntityManagerInterface $em): Response
     {
-        $em = $this->em();
+        $filterForm = $this->createForm(FilterProductType::class);
+
+        $filterForm->handleRequest($request);
+
+        if($filterForm->isSubmitted() && $filterForm->isValid()){
+            $data = $filterForm->getData();
+
+            $productData = $em->getRepository(Product::class)->searchProduct($data);
+            if(empty($productData)){
+                $productData = $em->getRepository(Product::class)->findAll();
+            }
+            return $this->render('product/index.html.twig', [
+                'productData' => $productData,
+                'filterForm' => $filterForm->createView()
+            ]);
+        }
 
         $productData = $em->getRepository(Product::class)->findAll();
-
         return $this->render('product/index.html.twig', [
-            'controller_name' => 'ProductController',
-            'productData' => $productData
+            'productData' => $productData,
+            'filterForm' => $filterForm->createView()
         ]);
     }
 
@@ -68,6 +86,7 @@ class ProductController extends AbstractController
      * @param Product $product
      * @param Request $request
      * @param EntityManagerInterface $em
+     * @return Response
      */
     public function editProduct(Product $product, Request $request, EntityManagerInterface $em): Response{
 

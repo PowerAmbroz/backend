@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Person;
+use App\Form\FilterPersonType;
 use App\Form\PersonType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,16 +21,44 @@ class PersonController extends AbstractController
 
     /**
      * @Route("/person", name="person")
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
      */
-    public function index(): Response
+    public function index(Request $request, EntityManagerInterface $em): Response
     {
-        $em = $this->em();
+        $filterForm = $this->createForm(FilterPersonType::class);
+
+        $filterForm->handleRequest($request);
+
+        if($filterForm->isSubmitted() && $filterForm->isValid()){
+            $data = $filterForm->getData();
+            if(!array_key_exists(0, $data['state'])){
+                $data['state'][0] = null;
+            }
+            if(!array_key_exists(1, $data['state'])){
+                $data['state'][1] = null;
+            }
+            if(!array_key_exists(2, $data['state'])){
+                $data['state'][2] = null;
+            }
+
+            $personData =  $em->getRepository(Person::class)->searchPerson($data);
+            if(empty($personData)){
+                $personData = $em->getRepository(Person::class)->findAll();
+            }
+
+            return $this->render('person/index.html.twig', [
+                'personData' => $personData,
+                'filterForm' => $filterForm->createView()
+            ]);
+        }
 
         $personData = $em->getRepository(Person::class)->findAll();
 
         return $this->render('person/index.html.twig', [
-            'controller_name' => 'PersonController',
-            'personData' => $personData
+            'personData' => $personData,
+            'filterForm' => $filterForm->createView()
         ]);
     }
 

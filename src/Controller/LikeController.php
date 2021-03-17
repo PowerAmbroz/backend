@@ -3,10 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Like;
+use App\Form\FilterLikeType;
 use App\Form\LikeType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,16 +20,36 @@ class LikeController extends AbstractController
 
     /**
      * @Route("/like", name="like")
+     * @param Request $request
+     * @return Response
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $em = $this->em();
 
+        $filterForm = $this->createForm(FilterLikeType::class);
+
+        $filterForm->handleRequest($request);
+
+        if($filterForm->isSubmitted() && $filterForm->isValid()) {
+            $data = $filterForm->getData();
+
+            $likeData = $em->getRepository(Like::class)->searchLike($data);
+            if (empty($likeData)) {
+                $likeData = $em->getRepository(Like::class)->getAllData();
+            }
+
+            return $this->render('like/index.html.twig', [
+                'likeData' => $likeData,
+                'filterForm' => $filterForm->createView()
+            ]);
+        }
+
         $likeData = $em->getRepository(Like::class)->getAllData();
-//        dump($likeData);die;
+
         return $this->render('like/index.html.twig', [
-            'controller_name' => 'LikeController',
-            'likeData' => $likeData
+            'likeData' => $likeData,
+            'filterForm' => $filterForm->createView()
         ]);
     }
 

@@ -30,32 +30,16 @@ class LikeRepository extends ServiceEntityRepository
                 ->getQuery()->getResult();
 
     }
-    // /**
-    //  * @return Like[] Returns an array of Like objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('l.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Like
-    {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+    public function searchLike($data){
+
+        return $this->createQueryBuilder('d')
+            ->select('d.id, pe.login, pr.name')
+            ->join(Person::class,'pe','WITH','pe.id = d.person_id')
+            ->join(Product::class,'pr','WITH','pr.id = d.product_id')
+            ->where('pe.login LIKE :login OR pr.name LIKE :name')
+            ->setParameter('login', '%'.$data['search'].'%')
+            ->setParameter('name', '%'.$data['search'].'%')
+            ->getQuery()->getResult();
     }
-    */
 }

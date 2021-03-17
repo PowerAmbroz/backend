@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +20,19 @@ class PersonRepository extends ServiceEntityRepository
         parent::__construct($registry, Person::class);
     }
 
-    // /**
-    //  * @return Person[] Returns an array of Person objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+    public function searchPerson($data){
 
-    /*
-    public function findOneBySomeField($value): ?Person
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $qb =
+           $this->createQueryBuilder('p')
+            ->where('p.state = :selectedActive OR p.state = :selectedBanned OR p.state = :selectedDeleted OR p.f_name LIKE :fname OR p.l_name LIKE :lname OR p.login LIKE :login')
+            ->setParameter('selectedActive', $data['state'][0])
+            ->setParameter('selectedBanned', $data['state'][1])
+            ->setParameter('selectedDeleted', $data['state'][2])
+            ->setParameter('fname', '%'.$data['search'].'%')
+            ->setParameter('lname', '%'.$data['search'].'%')
+            ->setParameter('login', '%'.$data['search'].'%')
+
+            ->getQuery()->getResult();
+        return $qb;
     }
-    */
 }

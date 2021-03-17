@@ -3,10 +3,17 @@
 {% block title %}Hello PersonController!{% endblock %}
 
 {% block main %}
+    <div class="add">
+        <a href="{{ path('add_person') }}" class="btn btn-success">Add Person</a>
+    </div>
+    {{ form_start(filterForm) }}
+    <div class="search form-inline my-2 my-lg-0">
+        {{ form_row(filterForm.search) }}
+        {{ form_row(filterForm.submit) }}
+    </div>
+    {{ form_end(filterForm) }}
 
-    <a href="{{ path('add_person') }}" class="btn btn-success">Add Person</a>
-
-    <table class="table table-striped">
+    <table id="personTable" class="table table-striped">
         <thead>
         <tr>
             <th scope="col">#</th>
@@ -20,7 +27,7 @@
         <tbody>
         {% for data in personData %}
         <tr>
-            <th scope="row">{{ data.id }}</th>
+            <td scope="row">{{ data.id }}</td>
             <td>{{ data.login }}</td>
             <td>{{ data.fname }}</td>
             <td>{{ data.lname }}</td>
