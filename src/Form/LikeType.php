@@ -23,7 +23,8 @@ class LikeType extends AbstractType
             },
                 'attr' => [
                     'class' => 'form-control'
-                ]
+                ],
+                'label' => 'Imię i Nazwisko'
             ])
             ->add('product_id', EntityType::class,[
                 'class' => Product::class,
@@ -32,7 +33,8 @@ class LikeType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'form-control'
-                ]
+                ],
+                'label' => 'Produkt'
             ])
             ->add('submit', SubmitType::class,[
                 'attr' => [

@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -23,17 +24,35 @@ class FilterPersonType extends AbstractType
                 'required' => false
 
             ])
-            ->add('state', ChoiceType::class,[
-                'choices' => [
-                    'aktywny' => 1,
-                    'banned' => 2,
-                    'usuniety' => 3
-                ],
-                'expanded' => true,
-                'multiple' => true,
+            ->add('stateActive', CheckboxType::class,[
+                'required' => false,
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-check-input'
+                ],
+                'label_attr' => [
+                  'class' => 'form-check-label'
+                ],
+                'label' => 'Stan Aktywny '
+            ])
+            ->add('stateBanned', CheckboxType::class,[
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-check-input'
+                ],
+                'label_attr' => [
+                  'class' => 'form-check-label'
+                ],
+                'label' => 'Stan Banned '
+            ])
+            ->add('stateDeleted', CheckboxType::class,[
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-check-input'
+                ],
+                'label_attr' => [
+                  'class' => 'form-check-label'
+                ],
+                'label' => 'Stan Usunięty '
             ])
             ->add('submit', SubmitType::class,[
                 'attr' => [

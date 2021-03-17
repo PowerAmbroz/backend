@@ -11,6 +11,15 @@
         {{ form_row(filterForm.search) }}
         {{ form_row(filterForm.submit) }}
     </div>
+    <div class="form-check checkbox">
+    {{ form_row(filterForm.stateActive) }}
+    </div>
+    <div class="form-check checkbox">
+    {{ form_row(filterForm.stateBanned) }}
+    </div>
+    <div class="form-check checkbox">
+    {{ form_row(filterForm.stateDeleted) }}
+    </div>
     {{ form_end(filterForm) }}
 
     <table id="personTable" class="table table-striped">

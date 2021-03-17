@@ -21,18 +21,53 @@ class PersonRepository extends ServiceEntityRepository
     }
 
     public function searchPerson($data){
+        $active = '';
+        $banned = '';
+        $deleted = '';
 
-        $qb =
-           $this->createQueryBuilder('p')
-            ->where('p.state = :selectedActive OR p.state = :selectedBanned OR p.state = :selectedDeleted OR p.f_name LIKE :fname OR p.l_name LIKE :lname OR p.login LIKE :login')
-            ->setParameter('selectedActive', $data['state'][0])
-            ->setParameter('selectedBanned', $data['state'][1])
-            ->setParameter('selectedDeleted', $data['state'][2])
-            ->setParameter('fname', '%'.$data['search'].'%')
-            ->setParameter('lname', '%'.$data['search'].'%')
-            ->setParameter('login', '%'.$data['search'].'%')
+        if($data['stateActive'] === true){
+            $active = 1;
+        }
+        if($data['stateBanned'] === true){
+            $banned = 2;
+        }
+        if($data['stateDeleted'] === true){
+            $deleted = 3;
+        }
 
-            ->getQuery()->getResult();
-        return $qb;
-    }
+        if($data['search'] === null && ($data['stateActive'] === true || $data['stateBanned'] === true || $data['stateDeleted'] === true)){
+            return
+                $this->createQueryBuilder('p')
+                    ->where('p.state = :stateActive OR p.state = :selectedBanned OR p.state = :selectedDeleted')
+                    ->setParameter('stateActive', $active)
+                    ->setParameter('selectedBanned', $banned)
+                    ->setParameter('selectedDeleted', $deleted)
+                    ->getQuery()->getResult();
+        }
+
+        if($data['search'] != null && ($data['stateActive'] === true || $data['stateBanned'] === true || $data['stateDeleted'] === true)){
+            return
+                $this->createQueryBuilder('p')
+                    ->where('p.f_name LIKE :fname OR p.l_name LIKE :lname OR p.login LIKE :login')
+                    ->setParameter('fname', '%'.$data['search'].'%')
+                    ->setParameter('lname', '%'.$data['search'].'%')
+                    ->setParameter('login', '%'.$data['search'].'%')
+                    ->andWhere('p.state = :stateActive OR p.state = :selectedBanned OR p.state = :selectedDeleted')
+                    ->setParameter('stateActive', $active)
+                    ->setParameter('selectedBanned', $banned)
+                    ->setParameter('selectedDeleted', $deleted)
+                    ->getQuery()->getResult();
+        }
+
+        if($data['search'] != null && ($data['stateActive'] != true || $data['stateBanned'] != true || $data['stateDeleted'] != true)){
+            return
+                $this->createQueryBuilder('p')
+                    ->where('p.f_name LIKE :fname OR p.l_name LIKE :lname OR p.login LIKE :login')
+                    ->setParameter('fname', '%'.$data['search'].'%')
+                    ->setParameter('lname', '%'.$data['search'].'%')
+                    ->setParameter('login', '%'.$data['search'].'%')
+                    ->getQuery()->getResult();
+        }
+}
+
 }

@@ -21,13 +21,17 @@ class ProductType extends AbstractType
         $builder
             ->add('name', TextType::class,[
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                    'placeholder' => 'Name'
+                ],
+                'label' => false
             ])
             ->add('info', TextareaType::class,[
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                    'placeholder' => 'Info'
+                ],
+                'label' => false
             ])
             ->add('public_date', DateType::class,[
                 'widget' => 'single_text',
@@ -38,7 +42,7 @@ class ProductType extends AbstractType
                     'data-placement' => "top",
                     'title' => "Data rozpoczęcia wydarzenia"
                 ],
-                'label' => false
+                'label' => 'Data Publikacji'
             ])
             ->add('submit', SubmitType::class,[
                 'attr' => [

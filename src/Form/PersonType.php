@@ -17,18 +17,25 @@ class PersonType extends AbstractType
         $builder
             ->add('login', TextType::class,[
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                    'placeholder' => 'Login',
+                ],
+
+                'label' => false
             ])
             ->add('f_name', TextType::class,[
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                    'placeholder' => 'First Name',
+                ],
+                'label' => false
             ])
             ->add('l_name', TextType::class,[
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                    'placeholder' => 'Last Name',
+                ],
+                'label' => false
             ])
             ->add('state', ChoiceType::class,[
                 'choices' => [
@@ -37,9 +44,10 @@ class PersonType extends AbstractType
                     'usuniety' => 3
                 ],
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control stany'
                 ],
-                'expanded' => true
+                'expanded' => true,
+                'label' => 'Stany'
             ])
             ->add('submit', SubmitType::class,[
                 'attr' => [

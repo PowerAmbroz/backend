@@ -1,0 +1,22 @@
+.container{
+    margin-top: 25px;
+}
+
+#person_state label, #filter_person_state label{
+    margin-right: 15px;
+    margin-left: 5px;
+}
+
+form div input, #person_state, #like_submit{
+    margin: 15px 0;
+}
+
+#person_state input, #filter_person_state input{
+    margin: 0;
+}
+
+.checkbox input{
+    position: absolute;
+    left: 21px;
+    top: 2px;
+}

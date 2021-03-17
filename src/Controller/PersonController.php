@@ -33,18 +33,12 @@ class PersonController extends AbstractController
 
         if($filterForm->isSubmitted() && $filterForm->isValid()){
             $data = $filterForm->getData();
-            if(!array_key_exists(0, $data['state'])){
-                $data['state'][0] = null;
-            }
-            if(!array_key_exists(1, $data['state'])){
-                $data['state'][1] = null;
-            }
-            if(!array_key_exists(2, $data['state'])){
-                $data['state'][2] = null;
-            }
 
             $personData =  $em->getRepository(Person::class)->searchPerson($data);
+
             if(empty($personData)){
+                $this->addFlash('danger', 'There are no records fulfilling your reguest. Showing all data.');
+
                 $personData = $em->getRepository(Person::class)->findAll();
             }
 
