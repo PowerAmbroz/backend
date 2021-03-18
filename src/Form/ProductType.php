@@ -15,9 +15,13 @@ class ProductType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+//      Formylarz Dodawania produktów
+//      przygotowanie formatu daty do wykorzystania w przycisku Date
+
         $today = new \DateTime();
         $t = $today->format('Y-m-d');
 
+//        Tworzenie pól do formularza
         $builder
             ->add('name', TextType::class,[
                 'attr' => [

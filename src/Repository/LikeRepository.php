@@ -21,7 +21,7 @@ class LikeRepository extends ServiceEntityRepository
         parent::__construct($registry, Like::class);
     }
 
-
+//pobranie wszystkich polubień oraz pokaznanie zamiast ID loginu oraz produktu
     public function getAllData(){
         return $this->createQueryBuilder('d')
             ->select('d.id, pe.login, pr.name')
@@ -31,8 +31,8 @@ class LikeRepository extends ServiceEntityRepository
 
     }
 
+//    funkcja szukająca polubień po loginie i nazwie produktu
     public function searchLike($data){
-
         return $this->createQueryBuilder('d')
             ->select('d.id, pe.login, pr.name')
             ->join(Person::class,'pe','WITH','pe.id = d.person_id')

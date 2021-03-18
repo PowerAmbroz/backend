@@ -14,11 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PersonController extends AbstractController
 {
-    public function em(): \Doctrine\Persistence\ObjectManager
-    {
-        return $this->getDoctrine()->getManager();
-    }
-
     /**
      * @Route("/person", name="person")
      * @param Request $request
@@ -27,21 +22,22 @@ class PersonController extends AbstractController
      */
     public function index(Request $request, EntityManagerInterface $em): Response
     {
-        $filterForm = $this->createForm(FilterPersonType::class);
+        $filterForm = $this->createForm(FilterPersonType::class); //Dodanie formularza z filtrami
 
-        $filterForm->handleRequest($request);
+        $filterForm->handleRequest($request); // Złapanie żądania
 
-        if($filterForm->isSubmitted() && $filterForm->isValid()){
-            $data = $filterForm->getData();
+        if($filterForm->isSubmitted() && $filterForm->isValid()){ //sprawdzenie czy formulatz został wysłany i czy jest poprawny
+            $data = $filterForm->getData(); // przypisanie danych z formylarza
 
-            $personData =  $em->getRepository(Person::class)->searchPerson($data);
+            $personData =  $em->getRepository(Person::class)->searchPerson($data); //pozyskanie danych opartych na tym co przesłano z formularza
 
-            if(empty($personData)){
+            if(empty($personData)){ //sprawdzenie czy personData jest puste
+                //jeśli jest puste to wypisuje komunikat oraz pobiera wszystkie dane
                 $this->addFlash('danger', 'There are no records fulfilling your reguest. Showing all data.');
 
                 $personData = $em->getRepository(Person::class)->findAll();
             }
-
+            //tworzenie widoku
             return $this->render('person/index.html.twig', [
                 'personData' => $personData,
                 'filterForm' => $filterForm->createView()
@@ -59,19 +55,21 @@ class PersonController extends AbstractController
     /**
      * @Route ("/person/add", name="add_person")
      * @param Request $request
+     * @param EntityManagerInterface $em
      * @return Response
      */
-    public function addPerson(Request $request){
+//    Dodawanie nowej osoby
+    public function addPerson(Request $request, EntityManagerInterface $em){
 
-        $personForm = $this->createForm(PersonType::class);
+        $personForm = $this->createForm(PersonType::class); //tworzenie formularza
 
         $personForm->handleRequest($request);
 
         if($personForm->isSubmitted() && $personForm->isValid()){
 
-            $em = $this->em();
-            $personData = $personForm->getData();
+            $personData = $personForm->getData(); //przypisanie danych z formularza
 
+//            Wysłanie danych do DB
             $em->persist($personData);
             $em->flush();
 
@@ -118,16 +116,19 @@ class PersonController extends AbstractController
     public function deletePerson($id, EntityManagerInterface $em){
 
         $updatePerson = $em->getRepository(Person::class)->find($id);
+//        Wyrzucenie informacji, że użytkownika nieznaleziono
         if (!$updatePerson) {
             throw $this->createNotFoundException(
                 'Person not found'
             );
+        }else{
+//            Ustawienie statusu 3 dla usunietych osób
+            $updatePerson->setState(3);
+            $em->flush();
+
+            $this->addFlash('success', 'Person\'s state has been changed');
         }
-
-        $updatePerson->setState(3);
-        $em->flush();
-
-        $this->addFlash('success', 'Person\'s state has been changed');
+//        przekierowanie do strony person
         return $this->redirectToRoute('person');
     }
 }

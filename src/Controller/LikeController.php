@@ -13,19 +13,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class LikeController extends AbstractController
 {
-    public function em(): \Doctrine\Persistence\ObjectManager
-    {
-        return $this->getDoctrine()->getManager();
-    }
-
     /**
      * @Route("/like", name="like")
      * @param Request $request
+     * @param EntityManagerInterface $em
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(Request $request, EntityManagerInterface $em): Response
     {
-        $em = $this->em();
 
         $filterForm = $this->createForm(FilterLikeType::class);
 
@@ -56,9 +51,10 @@ class LikeController extends AbstractController
     /**
      * @Route ("/like/add", name="add_like")
      * @param Request $request
+     * @param EntityManagerInterface $em
      * @return Response
      */
-    public function addLike(Request $request): Response
+    public function addLike(Request $request, EntityManagerInterface $em): Response
     {
 
         $likeForm = $this->createForm(LikeType::class);
@@ -67,7 +63,6 @@ class LikeController extends AbstractController
 
         if($likeForm->isSubmitted() && $likeForm->isValid()){
 
-            $em = $this->em();
             $likeData = $likeForm->getData();
 
             $em->persist($likeData);

@@ -21,10 +21,12 @@ class PersonRepository extends ServiceEntityRepository
     }
 
     public function searchPerson($data){
+//        Ustawienie lokalnych zmiennych
         $active = '';
         $banned = '';
         $deleted = '';
 
+//        Sprawdzenie czy checkboxy są zaznaczone - mają status true i dopisanie wartości do odpowiednich zmiennych
         if($data['stateActive'] === true){
             $active = 1;
         }
@@ -35,6 +37,7 @@ class PersonRepository extends ServiceEntityRepository
             $deleted = 3;
         }
 
+//        Kryteria wyszukowania, jeśli nic nie zostało wpisane w search, ale zaznaczono jakiś checkbox
         if($data['search'] === null && ($data['stateActive'] === true || $data['stateBanned'] === true || $data['stateDeleted'] === true)){
             return
                 $this->createQueryBuilder('p')
@@ -45,6 +48,7 @@ class PersonRepository extends ServiceEntityRepository
                     ->getQuery()->getResult();
         }
 
+//        Kryteria wyszukowania, jeśli coś zostało wpisane w search i zaznaczono jakiś checkbox
         if($data['search'] != null && ($data['stateActive'] === true || $data['stateBanned'] === true || $data['stateDeleted'] === true)){
             return
                 $this->createQueryBuilder('p')
@@ -59,6 +63,7 @@ class PersonRepository extends ServiceEntityRepository
                     ->getQuery()->getResult();
         }
 
+//        Kryteria wyszukowania, jeśli coś zostało wpisane w search i nie zaznaczono jakiś checkbox
         if($data['search'] != null && ($data['stateActive'] != true || $data['stateBanned'] != true || $data['stateDeleted'] != true)){
             return
                 $this->createQueryBuilder('p')

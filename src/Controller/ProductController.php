@@ -15,11 +15,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
 {
-    public function em(): \Doctrine\Persistence\ObjectManager
-    {
-        return $this->getDoctrine()->getManager();
-    }
-
     /**
      * @Route("/product", name="product")
      * @param Request $request
@@ -28,17 +23,20 @@ class ProductController extends AbstractController
      */
     public function index(Request $request,EntityManagerInterface $em): Response
     {
-        $filterForm = $this->createForm(FilterProductType::class);
+        $filterForm = $this->createForm(FilterProductType::class); //Dodanie formularza z filtrami
 
-        $filterForm->handleRequest($request);
+        $filterForm->handleRequest($request);// Złapanie żądania
 
-        if($filterForm->isSubmitted() && $filterForm->isValid()){
-            $data = $filterForm->getData();
+        if($filterForm->isSubmitted() && $filterForm->isValid()){//sprawdzenie czy formulatz został wysłany i czy jest poprawny
+            $data = $filterForm->getData();// przypisanie danych z formylarza
 
-            $productData = $em->getRepository(Product::class)->searchProduct($data);
-            if(empty($productData)){
+            $productData = $em->getRepository(Product::class)->searchProduct($data);//pozyskanie danych opartych na tym co przesłano z formularza
+
+            if(empty($productData)){//sprawdzenie czy personData jest puste
+                //jeśli jest puste to wypisuje komunikat oraz pobiera wszystkie dane
                 $productData = $em->getRepository(Product::class)->findAll();
             }
+            //tworzenie widoku
             return $this->render('product/index.html.twig', [
                 'productData' => $productData,
                 'filterForm' => $filterForm->createView()
@@ -55,9 +53,10 @@ class ProductController extends AbstractController
     /**
      * @Route ("/product/add", name="add_product")
      * @param Request $request
+     * @param EntityManagerInterface $em
      * @return RedirectResponse|Response
      */
-    public function addProduct(Request $request){
+    public function addProduct(Request $request, EntityManagerInterface $em){
 
         $productForm = $this->createForm(ProductType::class);
 
@@ -65,7 +64,6 @@ class ProductController extends AbstractController
 
         if($productForm->isSubmitted() && $productForm->isValid()){
 
-            $em = $this->em();
             $productData = $productForm->getData();
 
             $em->persist($productData);
@@ -113,11 +111,11 @@ class ProductController extends AbstractController
      */
     public function deleteProduct($id, EntityManagerInterface $em){
 
-        $deleteProduct = $em->getRepository(Product::class)->find($id);
-        $em->remove($deleteProduct);
+        $deleteProduct = $em->getRepository(Product::class)->find($id); //znalezienie produktu do usunięcia
+        $em->remove($deleteProduct); //usunięcie wybranego produktu
 
-        $deleteLike = $em->getRepository(Like::class)->findOneBy(['product_id' => $id]);
-        $em->remove($deleteLike);
+        $deleteLike = $em->getRepository(Like::class)->findOneBy(['product_id' => $id]); //znalezienie rekordu w tabeli Like, gdzie wystepuje poszukiwany produkt
+        $em->remove($deleteLike); //usunięcie informacji z tabeli Like
 
         $em->flush();
 

@@ -14,6 +14,7 @@ class FilterPersonType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+//        Formularz filtrowania dla Person
         $builder
             ->add('search', TextType::class,[
                 'attr' => [
